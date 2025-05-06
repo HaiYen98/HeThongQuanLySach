@@ -1,5 +1,5 @@
 import wx
-from models import Sach, TapChi, Bao, QuanLySach
+from logic import Sach, TapChi, Bao, QuanLySach
 
 USERS = {
     "admin": "1234",
