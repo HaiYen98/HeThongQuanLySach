@@ -1,61 +1,61 @@
 class TaiLieu:
-    def __init__(self, maTaiLieu, tenNxb, soBanPhatHanh):
-        self.maTaiLieu = maTaiLieu
-        self.tenNxb = tenNxb
-        self.soBanPhatHanh = soBanPhatHanh
+        self.__soBanPhatHanh = soBanPhatHanh
 
-    def getMaTaiLieu(self):
-        return self.maTaiLieu
+    def getMaTaiLieu(self): return self.__maTaiLieu
+    def setMaTaiLieu(self, ma): self.__maTaiLieu = ma
 
-    def getTenNxb(self):
-        return self.tenNxb
+    def getTenNxb(self): return self.__tenNxb
+    def setTenNxb(self, nxb): self.__tenNxb = nxb
 
-    def getSoBanPhatHanh(self):
-        return self.soBanPhatHanh
+    def getSoBanPhatHanh(self): return self.__soBanPhatHanh
+    def setSoBanPhatHanh(self, soBan): self.__soBanPhatHanh = soBan
+
+    def thongTin(self):
+        return f"Mã TL: {self.getMaTaiLieu()}, NXB: {self.getTenNxb()}, Số bản: {self.getSoBanPhatHanh()}"
 
 
 class Sach(TaiLieu):
     def __init__(self, maTaiLieu, tenNxb, soBanPhatHanh, soTrang, tenTg):
         super().__init__(maTaiLieu, tenNxb, soBanPhatHanh)
-        self.soTrang = soTrang
-        self.tenTg = tenTg
+        self.__soTrang = soTrang
+        self.__tenTg = tenTg
 
-    def getSoTrang(self):
-        return self.soTrang
+    def getSoTrang(self): return self.__soTrang
+    def setSoTrang(self, so): self.__soTrang = so
 
-    def getTenTg(self):
-        return self.tenTg
+    def getTenTg(self): return self.__tenTg
+    def setTenTg(self, ten): self.__tenTg = ten
 
-    def thongTinStr(self):
-        return f"Mã TL: {self.getMaTaiLieu()}, NXB: {self.getTenNxb()}, Số bản: {self.getSoBanPhatHanh()}, Tác giả: {self.getTenTg()}, Số trang: {self.getSoTrang()}"
+    def thongTin(self):
+        return f"{super().thongTin()}, Tác giả: {self.getTenTg()}, Số trang: {self.getSoTrang()}"
 
 
 class TapChi(TaiLieu):
     def __init__(self, maTaiLieu, tenNxb, soBanPhatHanh, soPhatHanh, thangPhatHanh):
         super().__init__(maTaiLieu, tenNxb, soBanPhatHanh)
-        self.soPhatHanh = soPhatHanh
-        self.thangPhatHanh = thangPhatHanh
+        self.__soPhatHanh = soPhatHanh
+        self.__thangPhatHanh = thangPhatHanh
 
-    def getSoPhatHanh(self):
-        return self.soPhatHanh
+    def getSoPhatHanh(self): return self.__soPhatHanh
+    def setSoPhatHanh(self, so): self.__soPhatHanh = so
 
-    def getThangPhatHanh(self):
-        return self.thangPhatHanh
+    def getThangPhatHanh(self): return self.__thangPhatHanh
+    def setThangPhatHanh(self, thang): self.__thangPhatHanh = thang
 
-    def thongTinStr(self):
-        return f"Mã TL: {self.getMaTaiLieu()}, NXB: {self.getTenNxb()}, Số bản: {self.getSoBanPhatHanh()}, Số phát hành: {self.getSoPhatHanh()}, Tháng: {self.getThangPhatHanh()}"
+    def thongTin(self):
+        return f"{super().thongTin()}, Số PH: {self.getSoPhatHanh()}, Tháng PH: {self.getThangPhatHanh()}"
 
 
 class Bao(TaiLieu):
     def __init__(self, maTaiLieu, tenNxb, soBanPhatHanh, ngayPhatHanh):
         super().__init__(maTaiLieu, tenNxb, soBanPhatHanh)
-        self.ngayPhatHanh = ngayPhatHanh
+        self.__ngayPhatHanh = ngayPhatHanh
 
-    def getNgayPhatHanh(self):
-        return self.ngayPhatHanh
+    def getNgayPhatHanh(self): return self.__ngayPhatHanh
+    def setNgayPhatHanh(self, ngay): self.__ngayPhatHanh = ngay
 
-    def thongTinStr(self):
-        return f"Mã TL: {self.getMaTaiLieu()}, NXB: {self.getTenNxb()}, Số bản: {self.getSoBanPhatHanh()}, Ngày phát hành: {self.getNgayPhatHanh()}"
+    def thongTin(self):
+        return f"{super().thongTin()}, Ngày PH: {self.getNgayPhatHanh()}"
 
 
 class QuanLySach:
@@ -63,10 +63,17 @@ class QuanLySach:
         self.danhSach = []
 
     def maTaiLieuDuyNhat(self, ma):
-        return all(tl.getMaTaiLieu() != ma for tl in self.danhSach)
+        return not any(tl.getMaTaiLieu() == ma for tl in self.danhSach)
 
     def themTaiLieu(self, tl):
         self.danhSach.append(tl)
 
     def xoaTaiLieu(self, ma):
         self.danhSach = [tl for tl in self.danhSach if tl.getMaTaiLieu() != ma]
+
+    def getTatCaTaiLieu(self):
+        return self.danhSach
+
+    def timKiemTheoLoai(self, loai):
+        loaiDict = {"sach": Sach, "tapchi": TapChi, "bao": Bao}
+        return [tl for tl in self.danhSach if isinstance(tl, loaiDict.get(loai, TaiLieu))]
